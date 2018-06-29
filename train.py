@@ -60,7 +60,7 @@ def visualize(imgs, labels):
 
 if __name__ == '__main__':
 	visualise = False
-	checkpointer = ModelCheckpoint(filepath='parameters/weights.hdf5', verbose=1, save_best_only=True)
+	checkpointer = ModelCheckpoint(filepath='parameters/weights.hdf5', verbose=1, save_best_only=True, save_weights_only=False)
 	args = get_arguments()
 
 	#read the data

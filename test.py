@@ -11,13 +11,25 @@ def get_arguments():
 	parser.add_argument('--batch_size', type=int, default=1, help = 'path to the model file')
 	return parser.parse_args()
 
+def create_model():
+	model = Sequential()
+	vgg_model = VGG16(include_top=False, weights='imagenet', input_tensor=None, input_shape=INPUT_SHAPE, pooling=None)
+	for layer in vgg_model.layers:
+		model.add(layer)
+	model.add(Flatten())
+	model.add(Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01)))
+	model.add(Dense(4, activation=None, kernel_regularizer=regularizers.l2(0.01)))
+	return model
 
 if __name__ == '__main__':
 	args = get_arguments()
 	files = os.listdir(args.basepath)
-	model = load_model(args.modelfile)
+	model = create_model()
+	model.load_weights(args.modelfile)
+	optimizer = RMSprop(lr=1e-5)
+	model.compile(optimizer=optimizer, loss='mse', metrics=['accuracy'])
 
-	for i in range(0, len(files), args.batch_size)
+	for i in range(0, len(files), args.batch_size):
 		imgs, imgs_resized = [], []
 		files_batch = files[i:i+args.batch_size]
 		for file_ in files_batch:
