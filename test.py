@@ -1,4 +1,9 @@
-from keras.models import load_model
+from keras.models import Sequential, load_model
+from keras.layers import Dense, Flatten
+from keras.applications.vgg16 import VGG16
+from keras.optimizers import RMSprop
+from keras import regularizers
+import numpy as np
 import os, argparse
 import cv2
 
@@ -8,7 +13,8 @@ def get_arguments():
 	parser = argparse.ArgumentParser(description='Necessary variables.')
 	parser.add_argument('--basepath', type=str, default=1, help = 'path to the images')
 	parser.add_argument('--modelfile', type=str, default=1, help = 'path to the model file')
-	parser.add_argument('--batch_size', type=int, default=1, help = 'path to the model file')
+	parser.add_argument('--batch_size', type=int, default=1, help = 'batch_size')
+	parser.add_argument('--out_folder', type=str default=1, help = 'path where output is saved')
 	return parser.parse_args()
 
 def create_model():
@@ -43,6 +49,7 @@ if __name__ == '__main__':
 		predictions = model.predict_on_batch(np.array(imgs_resized))
 		for i, prediction in enumerate(predictions):
 			x1,y1,x2,y2 = prediction
-			cv2.rectangle(img_resized[i], (x1,y1), (x2,y2), (0,255,0), 2)
+			img_out = imgs_resized[i]
+			cv2.rectangle(img_out, (x1,y1), (x2,y2), (0,255,0), 2)
 			filename = files_batch[i].split('.')[0]+"_pred.jpg"
-			cv2.imwrite(os.path.join(args.basepath, filename))
+			cv2.imwrite(os.path.join(args.basepath, filename), img_out)
