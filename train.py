@@ -43,7 +43,6 @@ def loc_model():
 	vgg_model = VGG16(include_top=False, weights='imagenet', input_tensor=None, input_shape=INPUT_SHAPE, pooling=None)
 	for layer in vgg_model.layers:
 		model.add(layer)
-		print(layer)
 	model.add(Flatten())
 	model.add(Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01)))
 	model.add(Dense(4, activation=None, kernel_regularizer=regularizers.l2(0.01)))
@@ -76,10 +75,11 @@ if __name__ == '__main__':
 	if args.pretrained == 0:
 		model = loc_model()
 		optimizer = RMSprop(lr=args.lr)
-		model.compile(optimizer=optimizer, loss='mse', metrics=['accuracy'], callbacks=[checkpointer])
+		model.compile(optimizer=optimizer, loss='mse', metrics=['accuracy'])
 
 	else:
 		model = load_model(args.modelfile)
+		model.lr.set_value(arg.lr)
 
 	#train the model
-	model.fit(x=imgs, y=labels, batch_size=args.batch_size, epochs=args.epoch, validation_split=0.1)
+	model.fit(x=imgs, y=labels, batch_size=args.batch_size, epochs=args.epoch, validation_split=0.1, callbacks=[checkpointer])
