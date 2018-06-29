@@ -36,7 +36,7 @@ if __name__ == '__main__':
 		filename = file_.split('.')[0] + '_aug.jpg'
 		pts = str(ref_pts[0][0])+','+str(ref_pts[0][1])+','+str(ref_pts[1][0])+','+str(ref_pts[1][1])
 		f_out.write(filename+'\t'+pts+'\n')
-		# cv2.imwrite(filename, aug_img)
+		cv2.imwrite(os.path.join(args.basepath,filename), aug_img)
 		# cv2.imshow( "augmentation", aug_img)
 		# cv2.waitKey(0) 
 		# cv2.destroyAllWindows()
