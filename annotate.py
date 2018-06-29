@@ -75,16 +75,10 @@ if __name__ == '__main__':
 				elif key == ord("c"):
 					break
 			 
-			# if there are two reference points, then crop the region of interest
-			# from teh image and display it
-			# if len(refPt) == 2:
-			# 	roi = clone[refPt[0][1]:refPt[1][1], refPt[0][0]:refPt[1][0]]
-			# 	cv2.imshow("ROI", roi)
-			# 	cv2.waitKey(0)
 				elif key == ord("s"):
-					pts = str(refPt[0][0])+','+str(refPt[0][1])+','+str(refPt[1][0]-refPt[0][0])+','+str(refPt[1][1]-refPt[0][1])
+					pts = str(refPt[0][0])+','+str(refPt[0][1])+','+str(refPt[1][0])+','+str(refPt[1][1])
 					print pts
-					f.write(os.path.join(folder, file_)+'\t'+pts+'\n')
+					f.write(file_+'\t'+pts+'\n')
 					break
 			# close all open windows
 			cv2.destroyAllWindows()

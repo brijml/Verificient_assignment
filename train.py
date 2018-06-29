@@ -60,7 +60,6 @@ def visualize(imgs, labels):
 
 if __name__ == '__main__':
 	visualise = False
-	checkpointer = ModelCheckpoint(filepath='parameters/weights.hdf5', verbose=1, save_best_only=True, save_weights_only=False)
 	args = get_arguments()
 
 	#read the data
@@ -72,6 +71,7 @@ if __name__ == '__main__':
 		visualize(imgs, labels)
 
 	#Instantiate a model
+	checkpointer = ModelCheckpoint(filepath='parameters/weights.hdf5', verbose=1, save_best_only=True, save_weights_only=False)
 	if args.pretrained == 0:
 		model = loc_model()
 		optimizer = RMSprop(lr=args.lr)
