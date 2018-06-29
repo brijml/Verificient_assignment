@@ -56,7 +56,7 @@ mock=2.0.0=py27h0c0c831_0
 ncurses=6.1=hf484d3e_0
 numpy=1.14.5=py27hcd700cb_0
 numpy-base=1.14.5=py27hdbf6ddf_0
-opencv=2.4.11=nppy27_0
+opencv=3.4.1=py27h6fd60c2_2
 openssl=1.0.2o=h20670df_0
 pbr=4.0.4=py27_0
 pcre=8.42=h439df22_0

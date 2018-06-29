@@ -1,9 +1,13 @@
+from keras.models import Sequential
 from keras.layers import Dense, Flatten
 from keras.applications.vgg16 import VGG16
 from keras.optimizers import RMSprop
+from keras.callbacks import ModelCheckpoint
+from keras import regularizers
 import argparse, os
 import cv2
 import numpy as np
+
 
 INPUT_SHAPE = (240, 320, 3)
 
@@ -13,8 +17,8 @@ def get_arguments():
 	parser.add_argument('--labels_file', type=str, default=1, help = 'path to the labels file')
 	parser.add_argument('--pretrained', type=int, default=0, help = 'Load pretrained model or not(1/0)')
 	parser.add_argument('--modelfile', type=str, default="my-model.h5", help = 'path to be given when pretrained is set to 1')
-	parser.add_argument('--batch_size', type=float, default=32, help = 'learning_rate')
-	parser.add_argument('--lr', type=int, default=1e-3, help = 'learning_rate')
+	parser.add_argument('--batch_size', type=int, default=32, help = 'learning_rate')
+	parser.add_argument('--lr', type=float, default=1e-3, help = 'learning_rate')
 	parser.add_argument('--savedir', type=str, help = 'where the model is saved')
 	parser.add_argument('--epoch', type=int, default=5, help = 'number of epochs')
 	return parser.parse_args()
@@ -26,7 +30,7 @@ def read_images_labels(lines):
 		img = cv2.imread(os.path.join(args.basepath,file_))
 		m,n,p = img.shape
 		h_factor, w_factor = int(m/INPUT_SHAPE[0]), int(n/INPUT_SHAPE[1])
-		img = cv2.resize(img, (n/w_factor, m/h_factor))
+		img = cv2.resize(img, (int(n/w_factor), int(m/h_factor)))
 		x,y,w,h = [int(i) for i in pts.split(',')]
 		label = [x/w_factor, y/h_factor, w/w_factor, h/h_factor]
 		images.append(img)
@@ -35,10 +39,14 @@ def read_images_labels(lines):
 	return np.array(images), np.array(labels)
 
 def loc_model():
-	model = VGG16(include_top=False, weights='imagenet', input_tensor=None, input_shape=(), pooling=None)
+	model = Sequential()
+	vgg_model = VGG16(include_top=False, weights='imagenet', input_tensor=None, input_shape=INPUT_SHAPE, pooling=None)
+	for layer in vgg_model.layers:
+		model.add(layer)
+		print(layer)
 	model.add(Flatten())
-	model.add(Dense(64), activation='relu')
-	model.add(Dense(4), activation=None)
+	model.add(Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01)))
+	model.add(Dense(4, activation=None, kernel_regularizer=regularizers.l2(0.01)))
 	return model
 
 def visualize(imgs, labels):
@@ -53,6 +61,7 @@ def visualize(imgs, labels):
 
 if __name__ == '__main__':
 	visualise = False
+	checkpointer = ModelCheckpoint(filepath='parameters/weights.hdf5', verbose=1, save_best_only=True)
 	args = get_arguments()
 
 	#read the data
@@ -67,7 +76,7 @@ if __name__ == '__main__':
 	if args.pretrained == 0:
 		model = loc_model()
 		optimizer = RMSprop(lr=args.lr)
-		model.compile(optimizer=optimizer, loss='mse', metrics=['accuracy'])
+		model.compile(optimizer=optimizer, loss='mse', metrics=['accuracy'], callbacks=[checkpointer])
 
 	else:
 		model = load_model(args.modelfile)
