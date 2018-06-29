@@ -1,4 +1,4 @@
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers import Dense, Flatten
 from keras.applications.vgg16 import VGG16
 from keras.optimizers import RMSprop
