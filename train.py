@@ -78,8 +78,10 @@ if __name__ == '__main__':
 		model.compile(optimizer=optimizer, loss='mse', metrics=['accuracy'])
 
 	else:
-		model = load_model(args.modelfile)
-		model.lr.set_value(arg.lr)
+		model = loc_model()
+		model.load_weights(args.modelfile)
+		optimizer = RMSprop(lr=args.lr)
+		model.compile(optimizer=optimizer, loss='mse', metrics=['accuracy'])
 
 	#train the model
 	model.fit(x=imgs, y=labels, batch_size=args.batch_size, epochs=args.epoch, validation_split=0.1, callbacks=[checkpointer])
