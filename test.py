@@ -49,7 +49,7 @@ if __name__ == '__main__':
 		predictions = model.predict_on_batch(np.array(imgs_resized))
 		for i, prediction in enumerate(predictions):
 			x1,y1,x2,y2 = prediction
-			img_out = imgs_resized[i]
-			cv2.rectangle(img_out, (x1,y1), (x2,y2), (0,255,0), 2)
+			img_out = imgs[i]
+			cv2.rectangle(img_out, (int(x1*w_factor),int(y1*h_factor)), (int(x2*w_factor),int(y2*h_factor)), (0,255,0), 2)
 			filename = files_batch[i].split('.')[0]+"_pred.jpg"
 			cv2.imwrite(os.path.join(args.out_folder, filename), img_out)
