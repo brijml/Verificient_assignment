@@ -14,7 +14,6 @@ def click_and_crop(event, x, y, flags, param):
 	# (x, y) coordinates and indicate that cropping is being
 	# performed
 	if event == cv2.EVENT_LBUTTONDOWN:
-		print 'hi'
 		refPt = [(x, y)]
 		cropping = True
  
@@ -32,12 +31,12 @@ def click_and_crop(event, x, y, flags, param):
 
 if __name__ == '__main__':
 	ap = argparse.ArgumentParser()
-	ap.add_argument("-f", "--folder", required=False, help="Path to the image")
-	ap.add_argument("-o", "--operation", required=True, help="what operation to perform")
+	ap.add_argument("-f", "--folder", required=True, help="Path to the image")
+	ap.add_argument("-o", "--operation", required=False, help="what operation to perform")
 	args = vars(ap.parse_args())
 	
 	if args["operation"] == 'load':
-		with open('out.txt') as f:
+		with open('labels.txt') as f:
 			lines = f.readlines()
 
 		for line in lines:
@@ -56,7 +55,6 @@ if __name__ == '__main__':
 		for file_ in files:
 			image_file = os.path.join(folder, file_)
 			image = cv2.imread(image_file)
-			print(image.shape)
 			clone = image.copy()
 			cv2.namedWindow("image")
 			cv2.setMouseCallback("image", click_and_crop)
